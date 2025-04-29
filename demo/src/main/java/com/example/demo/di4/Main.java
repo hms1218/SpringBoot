@@ -1,22 +1,32 @@
-package com.example.demo.di3;
+package com.example.demo.di4;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.google.common.reflect.ClassPath;
 
-//컴포넌트 스캐닝
-//클래스 앞에 @Component 어노테이션을 붙이고
-//패키지에서 컴포넌트 어노테이션이 붙어있는 클래스를 찾아서
-//객체로 만들어서 맵에 저장하는 기법
-@Component class Car{};
+@Component class Car{
+	@Autowired
+	Engine engine;
+	
+	@Autowired
+	Wheel wheel;
+	
+	@Override
+	public String toString() {
+		return "Car [engine = "+engine+", wheel = " + wheel+"]";
+	}
+};
 @Component class SportCar extends Car{};
 @Component class Truck extends Car{};
 @Component class Engine{};
+@Component class Wheel{};
 
 class AppContext{
 	Map map;
@@ -24,9 +34,33 @@ class AppContext{
 	public AppContext() {
 		map = new HashMap();
 		doComponentScan();
+		doAutowired();
 	}
+	
+	//map에 저장된 객체의 객체변수 중 @Autowired가 붙어있으면
+	//타입에 맞는 객체를 찾아서 연결한다.
+	private void doAutowired() {
+		try {
+			//맵에 들어있는 객체를 하나씩 꺼내서 
+			for(Object obj : map.values()) {
+				//getClass()로 클래스 정보를 얻어오고
+				//getDeclaredFields()로 해당 클래스에 있는 필드의 정보들을 배열로 반환
+				for(Field fld : obj.getClass().getDeclaredFields()) {
+					//필드에 Autowired 어노테이션이 붙어있는지 확인하고
+					if(fld.getAnnotation(Autowired.class) != null) {
+						//그 필드에 맞는 객체가 있으면 세팅을 해라
+						fld.set(obj, getBean(fld.getType()));
+					}
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	
 	//패키지에 클래스를 모두 순회하면서 @Component 어노테이션이 붙은 클래스를 
 	//Map에 객체로 등록을 한다.
+	//@ComponentScan이 아래 함수의 역할을 한다.
 	private void doComponentScan() {
 		try {
 			//1. 패키지 내의 클래스 목록을 가져온다.
@@ -43,7 +77,7 @@ class AppContext{
 			ClassPath classPath = ClassPath.from(classLoader);
 			
 			//지정한 패키지 내의 최상위 클래스를 가져온다.
-			Set<ClassPath.ClassInfo> set = classPath.getTopLevelClasses("com.example.demo.di3");
+			Set<ClassPath.ClassInfo> set = classPath.getTopLevelClasses("com.example.demo.di4");
 			
 			for(ClassPath.ClassInfo classInfo: set) {
 				//ClassInfo 객체를 실제 Class로 변환을 한다.
@@ -93,32 +127,20 @@ class AppContext{
 	
 }
 
-//<디자인 패턴>
-//소프트웨어 설계 과정에서 반복적으로 발생하는 문제를 해결하기 위한 재사용 가능한 설계 기법이다.
-//특정 언어나 플랫폼에 종속되는 것이 아니라, 상황과 해법의 구조를 문서화한 유연한 설계도라고 생각하면 된다.
-
-//<싱글톤 패턴>
-//스프링이 직접 관리하도록 시킨 클래스는 메모리에 무조건 한번만 올라간다.
-//사용할 때는 메모리에 올라가 있는 객체를 받아서 사용한다.
-
-//<팩토리 패턴>
-//객체 생성 로직을 별도의 클래스로 분리하여, 클라이언트 코드가 구체적인 클래스에 의존하지 않도록 만드는 패턴
-
 public class Main {
 	public static void main(String[] args) {
 		AppContext ac = new AppContext();
 		
+		//car객체에 필드로 engine과 wheel을 갖는다.
 		Car car = (Car)ac.getBean("car");
-		System.out.println("car = " + car);
 		
 		Engine engine = (Engine)ac.getBean("engine");
-		System.out.println("engine = " + engine);
+		Wheel wheel = (Wheel)ac.getBean("wheel");
 		
-		//타입을 통해서 map에 저장되어있는 객체 찾기
-		Car car2 = (Car)ac.getBean(Car.class);
-		System.out.println("car2 = " + car2);
+		//원래 자바에서는 필드에 직접 객체를 넣어줘야한다.(의존성 주입)
+		//car.engine = engine;
+		//car.wheel = wheel;
 		
-		//실제로는 @ComponentScan 어노테이션으로 모든과정(AppContext)을 퉁친다.
-		//내부에서는 위와 같은 원리로 돌아가고 있다.
+		System.out.println(car);
 	}
 }
