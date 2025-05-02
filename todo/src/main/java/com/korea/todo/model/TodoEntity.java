@@ -32,4 +32,8 @@ public class TodoEntity {
 	private String userId; //이 객체를 생성한 유저의 id
 	private String title; //Todo의 title
 	private boolean done; //Todo의 완료 여부
+	
+	
 }
+
+
