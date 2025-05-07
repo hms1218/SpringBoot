@@ -38,11 +38,15 @@ public class TodoService {
 //		return savedEntity.get(0).getTitle();
 //	}
 	
+	//추가하기
 	public List<TodoEntity> create(TodoEntity entity){
 		//매개변수로 넘어온 entity가 유효한지 검사한다.
 		validate(entity);
 		
+		//데이터베이스에 추가
+		//save() : insert into todo values(....)
 		repository.save(entity);
+		
 		log.info("Entity Id : {} is saved",entity.getId());
 		
 		//엔티티를 데이터베이스에 추가하고 전체 조회를 한다.
@@ -66,6 +70,8 @@ public class TodoService {
 	//조회하는 retrive메서드
 	//findByUserId()
 	public List<TodoEntity> retrive(String userId){
+		//findByUserId : select * from todo where userId=xxx
+		//해당 userId에 대한 모든 정보를 가져온다.
 		return repository.findByUserId(userId);
 	}
 	

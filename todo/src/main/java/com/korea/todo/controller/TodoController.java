@@ -65,6 +65,7 @@ public class TodoController {
 			
 			//변환된 TodoDTO 리스트를 이용해 ResponseDTO를 초기화한다.
             //builder() 패턴을 사용하여 ResponseDTO 객체를 생성한다.
+			//ResponseDTO : error문자열과, List<T> data필드 두가지를 가지고있다.
 			ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build();
 			
 			//ResponseDTO를 반환한다.

@@ -18,6 +18,7 @@ import com.korea.todo.model.TodoEntity;
 //Spring data JPA에서 제공하는 기본 인터페이스로 JPA를 사용하여 데이터베이스 작업을 
 //쉽게 처리할 수 있도록 도와주는 역할을 한다.
 // T : 엔티티 클래스 / ID : 엔티티 클래스의 기본 키 타입을 의미한다.
+//JPARepository 인터페이스로부터 메서드를 받아서 사용한다. (extends)
 public interface TodoRepository extends JpaRepository<TodoEntity, String>{
 
 	//t.userId=?1 (userId에 들어있는 1번(첫번째)값)
