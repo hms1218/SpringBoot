@@ -1,10 +1,10 @@
 package com.korea.user.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import com.korea.user.dto.UserDTO;
 import com.korea.user.model.UserEntity;
@@ -36,12 +36,28 @@ public class UserService {
 	}
 	
 	//이메일로 사용자 검색하기
-	public List<UserDTO> getUser(UserEntity entity){
-		return repository.findByEmail(entity.getEmail());
+	public UserDTO getUserByEmail(String email){
+		UserEntity entity = repository.findByEmail(email);
+		return new UserDTO(entity);
 	}
 	
 	//ID를 통해 이름과 이메일 수정하기
-	
+	public List<UserDTO> updateUser(UserEntity entity){
+		//id를 통해 얻은 기존 데이터
+		Optional<UserEntity> userOptional = repository.findById(entity.getId());
+		
+		//사용자가 존재할 경우 업데이트 로직을 실행
+		userOptional.ifPresent(userEntity -> {
+			//기존 데이터에 새 데이터 세팅하기
+			userEntity.setName(entity.getName());
+			userEntity.setEmail(entity.getEmail());
+			
+			//새 데이터 데이터베이스에 저장하기
+			repository.save(userEntity);
+		});
+		
+		return getAllUsers();
+	}
 	
 	
 	
