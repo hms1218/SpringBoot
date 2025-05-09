@@ -40,3 +40,7 @@ public class UserEntity {
 	private String authProvider; // 소셜로그인 할 때 사용할 유저 정보의 제공자
 	
 }
+
+//테이블을 생성하고 엔티티와 매핑을 시킨것이 아니라
+//ENTITY를 통해서 JPA가 테이블 생성을 해줬다.
+//user_entity라는 이름으로 테이블이 생성된다.
