@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 public class ProductDTO {
 	private int id;
 	private String name;
-	private String stock;
-	private double price;
+	private int stock;
+	private int price;
 	private LocalDateTime registerDate;
 	private LocalDateTime updateDate;
 	

@@ -24,9 +24,18 @@ public class ProductService {
 		return products.stream().map(ProductDTO::new).collect(Collectors.toList());
 	}
 	
+	//유효검사
+	private void validate(ProductEntity entity) {
+		if(entity == null) {
+			throw new RuntimeException("Entity cannot be null");
+		}
+	}
+	
 	//추가
 	public List<ProductDTO> create(ProductDTO dto){
 		ProductEntity entity = ProductDTO.toEntity(dto);
+		
+		validate(entity);
 		
 		repository.save(entity);
 		

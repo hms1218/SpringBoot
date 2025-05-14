@@ -26,8 +26,8 @@ public class ProductEntity {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
 	private String name;
-	private String stock;
-	private double price;
+	private int stock;
+	private int price;
 	@CreationTimestamp //insert쿼리가 발생할 때 현재 시간 값을 적용시켜준다.
 	private LocalDateTime registerDate;
 	
