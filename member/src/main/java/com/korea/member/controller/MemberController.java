@@ -57,7 +57,7 @@ public class MemberController {
 	}
 	
 	//이메일로 비밀번호 변경
-	@PutMapping("/{email}")
+	@PutMapping("/{email}/password")
 	public ResponseEntity<?> updateMember(@PathVariable("email") String email, @RequestBody MemberDTO dto){
 		List<MemberDTO> members = service.updateMember(email, dto);
 		
