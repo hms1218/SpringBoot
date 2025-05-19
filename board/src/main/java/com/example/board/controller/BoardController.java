@@ -45,8 +45,19 @@ public class BoardController {
 		return ResponseEntity.ok(response);
 	}
 	
+	//id를 통한 게시글 한 건 조회하기("/{id}") (@Pathvariable 사용하기)
+	@GetMapping("/{id}")
+	public ResponseEntity<?> getIdPost(@PathVariable("id") Long id){
+		List<BoardDTO> list = service.getIdPost(id);
+		
+		ResponseDTO<BoardDTO> response = ResponseDTO.<BoardDTO>builder().data(list).build();
+		
+		return ResponseEntity.ok(response);
+	}
+	
+	
 	//게시물 수정하기
-	@PutMapping("/update/{id}")
+	@PutMapping("/{id}")
 	public ResponseEntity<?> updatePost(@PathVariable("id") Long id, @RequestBody BoardDTO dto){
 		List<BoardDTO> list = service.updatePost(id, dto);
 		
@@ -56,13 +67,11 @@ public class BoardController {
 	}
 	
 	//게시물 삭제하기
-	@DeleteMapping("/delete/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deletePost(@PathVariable("id") Long id){
-		List<BoardDTO> list = service.deletePost(id);
+		boolean result = service.deletePost(id);
 		
-		ResponseDTO<BoardDTO> response = ResponseDTO.<BoardDTO>builder().data(list).build();
-		
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(result);
 	}
 	
 	

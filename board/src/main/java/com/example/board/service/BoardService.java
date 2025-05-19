@@ -25,6 +25,19 @@ public class BoardService {
 		return list.stream().map(BoardDTO::new).collect(Collectors.toList());
 		
 	}
+	
+	//id를 통한 게시글 한 건 조회하기
+	public List<BoardDTO> getIdPost(Long id) {
+		Optional<BoardEntity> optional = repository.findById(id);
+		
+		List<BoardDTO> list = null;
+		
+		if(optional.isPresent()) {
+			list = optional.stream().map(BoardDTO::new).collect(Collectors.toList());
+		}
+		
+		return list;
+	}
 
 	//게시물 추가하기
 	public List<BoardDTO> addPost(BoardDTO dto) {
@@ -53,18 +66,17 @@ public class BoardService {
 	}
 	
 	//게시물 삭제하기
-	public List<BoardDTO> deletePost(Long id) {
-		Optional<BoardEntity> optional = repository.findById(id);
-		
-		if(optional.isPresent()) {
-			BoardEntity entity = optional.get();
-			
-			repository.delete(entity);
+	public boolean deletePost(Long id) {
+		if(repository.existsById(id)) {
+			repository.deleteById(id);
+			return true;
 		}
 		
-		return repository.findAll().stream().map(BoardDTO::new).collect(Collectors.toList());
+		return false;
 		
 	}
+
+	
 
 	
 	
